@@ -49,31 +49,44 @@ void loop() {
 //  readCapMux(1);
 }
 
-void readCapMux(int number){
-  Serial.print(number);
+void readCapMux(int number){ //function to read the sensors through the multiplexors
+  Serial.print(number); //write sensor number in the serial monitor
   Serial.print(":  ");
   int i;
-  for(i = 0; i < 12; i++){
+  for(i = 0; i < 12; i++){ //tell the multiplexor which sensor to read
     digitalWrite(capMuxPins[0 + (4 * number)], bitRead(i, 0)); 
     digitalWrite(capMuxPins[1 + (4 * number)], bitRead(i, 1));
     digitalWrite(capMuxPins[2 + (4 * number)], bitRead(i, 2));
     digitalWrite(capMuxPins[3 + (4 * number)], bitRead(i, 3));
-    capValues[i + (12 * number)] = touchRead(capMuxReadPins[number]);
+    capValues[i + (12 * number)] = touchRead(capMuxReadPins[number]); // read the sensor, and write its value to its place in the array
     
-    Serial.print(capValues[i + (12 * number)]);
+    Serial.print(capValues[i + (12 * number)]); //write the sensors value to the serial monitor
     Serial.print("  ");
   }
   Serial.println();
-
-  for (i=0; i<13; i++) {
-
-    if (capValues[i]>200 && notes[note_base+i]==0) {// if the note is not already sounding
-      notes[note_base+i]=1;
-      usbMIDI.sendNoteOn(note_base+i, 127, 1);
+  int afterTouch;
+  int temp;
+  for (i=0; i<13; i++) { //cycle over the 12 notes / sensors
+    if (capValues[i]>138){// Minimum value that makes sound
+      if(notes[note_base+i]==0){ //if current note is not already sounding
+        notes[note_base+i]=1; //write a "1" to the notes place in the array
+        usbMIDI.sendNoteOn(note_base+i, 127, 1); // and send the "note on"
+      }
+      else{   //if note is already sounding
+        afterTouch = map(capValues[i], 138, 200, 0, 127); //calculate aftertouch (or CC2 = "wind controller")
+        if(afterTouch > 127){ //limit after touch to MIDI range
+          afterTouch = 127;
+        }
+        else if(afterTouch < 0){
+          afterTouch = 0;
+        }
+        usbMIDI.sendControlChange(2, afterTouch, 1); //send after-touch for current note
+      }
     }
-    else if (capValues[i]>115 && capValues[i]<150) { //
-      notes[note_base+i]=0;
-      usbMIDI.sendNoteOn(note_base+i, 0, 1);
+    
+    else if (capValues[i]>115 && capValues[i]<130) { //if value of sensor is between these values
+      notes[note_base+i]=0; //write a "0" in the notes place in the array
+      usbMIDI.sendNoteOn(note_base+i, 0, 1); // and send a MIDI  note-off for the note
     }
   }
 }
@@ -119,5 +132,3 @@ void isort(int *a, int n){
     a[k + 1] = j;
   }
 }
-
-
