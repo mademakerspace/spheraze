@@ -1,3 +1,10 @@
+/* 
+retocado segun indica ésta web: 
+https://forum.pjrc.com/threads/33517-Changing-sensitivity-of-touchRead()
+para poder usar la función setTouchReadSensitivity(uint8_t t_current, uint8_t num_scans, uint8_t t_prescale);
+
+
+Teensyduino Core Library
 /* Teensyduino Core Library
  * http://www.pjrc.com/teensy/
  * Copyright (c) 2017 PJRC.COM, LLC.
@@ -38,9 +45,12 @@
 // Lower current, higher number of scans, and higher prescaler
 // increase sensitivity, but the trade-off is longer measurement
 // time and decreased range.
-#define CURRENT   5 // 0 to 15 - current to use, value is 2*(current+1)
-#define NSCAN     1 // number of times to scan, 0 to 31, value is nscan+1
-#define PRESCALE  1 // prescaler, 0 to 7 - value is 2^(prescaler+1)
+uint8_t CURRENT = 2;
+uint8_t NSCAN = 9;
+uint8_t PRESCALE = 2;
+//#define CURRENT   2 // 0 to 15 - current to use, value is 2*(current+1), default 2
+//#define NSCAN     9 // number of times to scan, 0 to 31, value is nscan+1, default 9
+//#define PRESCALE  2 // prescaler, 0 to 7 - value is 2^(prescaler+1), default 2
 static const uint8_t pin2tsi[] = {
 //0    1    2    3    4    5    6    7    8    9
   9,  10, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -50,8 +60,12 @@ static const uint8_t pin2tsi[] = {
 };
 
 #elif defined(__MK66FX1M0__)
-#define NSCAN     9
-#define PRESCALE  2
+uint8_t CURRENT = 2;
+uint8_t NSCAN = 9;
+uint8_t PRESCALE = 2;
+//#define CURRENT   2
+//#define NSCAN     9
+//#define PRESCALE  2
 static const uint8_t pin2tsi[] = {
 //0    1    2    3    4    5    6    7    8    9
   9,  10, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -61,8 +75,10 @@ static const uint8_t pin2tsi[] = {
 };
 
 #elif defined(__MKL26Z64__)
-#define NSCAN     9
-#define PRESCALE  2
+uint8_t CURRENT = 9;
+uint8_t NSCAN = 2;
+//#define NSCAN     9
+//#define PRESCALE  2
 static const uint8_t pin2tsi[] = {
 //0    1    2    3    4    5    6    7    8    9
   9,  10, 255,   2,   3, 255, 255, 255, 255, 255,
