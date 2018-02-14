@@ -116,18 +116,6 @@ void readCapMux0(int number){ //function to read the sensors through the multipl
   }
 }
 
-void setTouchReadSensitivity(uint8_t t_current, uint8_t num_scans, uint8_t t_prescale){
-	//check the new values are in range
-        if(t_current>15) t_current=15; 
-	if(num_scans>31) num_scans=31;
-	if(t_prescale>7) t_prescale=7;
-
-        //update the variables
-	CURRENT=t_current; //0 to 15 - current to use, value is 2*(current+1), default 2
-	NSCAN=num_scans; //number of times to scan, 0 to 31, value is nscan+1, default 9
-	PRESCALE=t_prescale; //prescaler, 0 to 7 - value is 2^(prescaler+1), default 2
-}
-
 
 // EXPONENTIAL FILTER:
 
